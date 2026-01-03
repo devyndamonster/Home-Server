@@ -20,3 +20,14 @@ Docker compose was installed using [this guide](https://docs.docker.com/compose/
 ### Mealie
 
 Mealie was installed using [this guide](https://docs.mealie.io/documentation/getting-started/installation/installation-checklist/)
+
+### Portainer
+
+Portainer is a container management tool that provides a web UI for managing Docker containers.
+
+To start Portainer:
+```bash
+docker compose -f portainer/portainer-compose.yaml up -d
+```
+
+Access the web UI at: https://localhost:9443
