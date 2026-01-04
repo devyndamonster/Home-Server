@@ -46,6 +46,40 @@ cat mealie/backup.log
 crontab -e
 ```
 
+### Firefly III
+
+Firefly III is a self-hosted personal finance manager that helps track expenses, budgets, and financial goals.
+
+#### Automated Backups
+
+A backup script (`firefly/backup_to_flash.sh`) automatically backs up Firefly III data weekly on Sundays at 10:00 AM to the mounted flash drive at `/media/devyn-myers/25F4-4EDE/firefly-backups/`.
+
+The script:
+- Creates a backup of the database, upload volume, and configuration files
+- Saves the backup as a date-stamped .tar.gz file to the flash drive
+- Keeps the last 5 backups and removes older ones
+- Logs output to `firefly/backup.log`
+
+**Manual backup:**
+```bash
+./firefly/backup_to_flash.sh
+```
+
+Or directly with the backup script:
+```bash
+sudo bash firefly-iii-backuper.sh backup /media/devyn-myers/25F4-4EDE/firefly-backups/firefly_backup_01_04_2026.tar.gz
+```
+
+**View backup logs:**
+```bash
+cat firefly/backup.log
+```
+
+**Modify schedule:**
+```bash
+crontab -e
+```
+
 ### Portainer
 
 Portainer is a container management tool that provides a web UI for managing Docker containers.
