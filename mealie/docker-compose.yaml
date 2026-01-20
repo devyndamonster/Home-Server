@@ -5,6 +5,8 @@ services:
     restart: always
     ports:
         - "9925:9000" # 
+    networks:
+      - nginx_proxy
     deploy:
       resources:
         limits:
@@ -19,8 +21,12 @@ services:
       PUID: 911
       PGID: 911
       TZ: EST
-      BASE_URL: http://localhost:8080
+      BASE_URL: http://mealie.home
       OPENAI_API_KEY: ${OPENAI_API_KEY}
 
 volumes:
   mealie-data:
+
+networks:
+  nginx_proxy:
+    external: true

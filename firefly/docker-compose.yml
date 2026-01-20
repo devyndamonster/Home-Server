@@ -9,6 +9,7 @@ services:
     env_file: .env
     networks:
       - firefly_iii
+      - nginx_proxy
     ports:
       - 80:8080
     depends_on:
@@ -50,3 +51,5 @@ volumes:
 networks:
   firefly_iii:
     driver: bridge
+  nginx_proxy:
+    external: true

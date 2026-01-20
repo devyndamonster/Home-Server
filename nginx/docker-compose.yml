@@ -1,0 +1,18 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+      - ./ssl:/etc/nginx/ssl  # For future SSL certificates
+    networks:
+      - nginx_proxy
+
+networks:
+  nginx_proxy:
+    name: nginx_proxy
+    driver: bridge
