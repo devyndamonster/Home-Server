@@ -13,7 +13,7 @@ This nginx configuration provides reverse proxy access to your homeserver servic
 
 ```bash
 cd nginx
-docker-compose up -d
+docker compose up -d
 ```
 
 ### 2. Restart your services
@@ -22,10 +22,10 @@ Since we've added the nginx network, restart your services:
 
 ```bash
 cd ../firefly
-docker-compose down && docker-compose up -d
+docker compose down && docker compose up -d
 
 cd ../mealie
-docker-compose down && docker-compose up -d
+docker compose down && docker compose up -d
 ```
 
 ### 3. Configure DNS
@@ -71,7 +71,7 @@ When you're ready to add HTTPS:
 1. Generate self-signed certificates or set up Let's Encrypt
 2. Update the nginx configs in `conf.d/` to use SSL
 3. Place certificates in `ssl/` directory
-4. Restart nginx: `docker-compose restart`
+4. Restart nginx: `docker compose restart`
 
 ## Troubleshooting
 
