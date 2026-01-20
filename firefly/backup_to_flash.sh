@@ -18,7 +18,7 @@ fi
 
 # Run the backup
 echo "Running backup to: $BACKUP_DIR/$BACKUP_FILE"
-sudo bash "$SCRIPT_DIR/firefly-iii-backuper.sh" backup "$BACKUP_DIR/$BACKUP_FILE"
+bash "$SCRIPT_DIR/firefly-iii-backuper.sh" backup "$BACKUP_DIR/$BACKUP_FILE"
 
 if [ $? -eq 0 ]; then
     echo "Backup completed successfully"
