@@ -1,6 +1,15 @@
 # HomeServer
 My personal home server stuff
 
+## Accessing Services
+
+Services are accessible via local DNS using human-readable URLs:
+- **Mealie:** http://mealie.home
+- **Firefly III:** http://firefly.home
+- **Pi-hole Admin:** http://192.168.4.73:8080/admin
+
+**DNS Setup:** Configure your device or router to use `192.168.4.73` as the DNS server.
+
 ## Setup
 
 ### Git
@@ -90,3 +99,50 @@ docker compose -f portainer/portainer-compose.yaml up -d
 ```
 
 Access the web UI at: https://localhost:9443
+
+### Pi-hole
+
+Pi-hole provides local DNS resolution with ad-blocking capabilities. Configured to resolve custom `.home` domains to the server IP.
+
+**Start Pi-hole:**
+```bash
+cd pihole
+docker compose up -d
+```
+
+**Access admin panel:** http://192.168.4.73:8080/admin (password in `pihole/.env`)
+
+**Add local DNS records:**
+1. Go to Local DNS → DNS Records in the admin panel
+2. Add domain (e.g., `service.home`) pointing to `192.168.4.73`
+
+**Configure devices:** Set DNS server to `192.168.4.73` on your router or individual devices.
+
+### Nginx
+
+Nginx acts as a reverse proxy, routing HTTP requests from human-readable URLs to the appropriate Docker containers.
+
+**Start nginx:**
+```bash
+cd nginx
+docker compose up -d
+```
+
+**Add a new service:**
+1. Create a config file in `nginx/conf.d/servicename.conf`:
+```nginx
+server {
+    listen 80;
+    server_name servicename.home;
+
+    location / {
+        proxy_pass http://container_name:port;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+2. Restart nginx: `docker compose restart`
+3. Add DNS record in Pi-hole for `servicename.home` → `192.168.4.73`
