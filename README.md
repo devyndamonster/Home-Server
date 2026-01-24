@@ -6,7 +6,7 @@ My personal home server stuff
 Services are accessible via local DNS using human-readable URLs:
 - **Mealie:** http://mealie.home
 - **Firefly III:** http://firefly.home
-- **Pi-hole Admin:** http://192.168.4.73:8080/admin
+- **Pi-hole Admin:** http://pihole.home/admin or http://192.168.4.73:8080/admin
 
 **DNS Setup:** Configure your device or router to use `192.168.4.73` as the DNS server.
 
@@ -102,7 +102,7 @@ Access the web UI at: https://localhost:9443
 
 ### Pi-hole
 
-Pi-hole provides local DNS resolution with ad-blocking capabilities. Configured to resolve custom `.home` domains to the server IP.
+Pi-hole provides local DNS resolution with ad-blocking capabilities. Runs in host network mode to accept DNS queries from the local network. Web interface runs on port 8080 to avoid conflict with nginx.
 
 **Start Pi-hole:**
 ```bash
@@ -110,17 +110,20 @@ cd pihole
 docker compose up -d
 ```
 
-**Access admin panel:** http://192.168.4.73:8080/admin (password in `pihole/.env`)
+**Access admin panel:** http://pihole.home/admin or http://192.168.4.73:8080/admin
 
 **Add local DNS records:**
-1. Go to Local DNS → DNS Records in the admin panel
-2. Add domain (e.g., `service.home`) pointing to `192.168.4.73`
+Custom DNS entries are stored in `/etc/pihole/hosts/custom.list` inside the container. Add entries manually:
+```bash
+docker exec pihole sh -c "echo '192.168.4.73 service.home' >> /etc/pihole/hosts/custom.list"
+docker exec pihole pihole reloaddns
+```
 
 **Configure devices:** Set DNS server to `192.168.4.73` on your router or individual devices.
 
 ### Nginx
 
-Nginx acts as a reverse proxy, routing HTTP requests from human-readable URLs to the appropriate Docker containers.
+Nginx acts as a reverse proxy, routing HTTP requests from human-readable URLs to the appropriate Docker containers. Runs on the `nginx_proxy` bridge network.
 
 **Start nginx:**
 ```bash
@@ -129,7 +132,8 @@ docker compose up -d
 ```
 
 **Add a new service:**
-1. Create a config file in `nginx/conf.d/servicename.conf`:
+1. Ensure the service container is on the `nginx_proxy` network
+2. Create a config file in `nginx/conf.d/servicename.conf`:
 ```nginx
 server {
     listen 80;
@@ -144,5 +148,7 @@ server {
     }
 }
 ```
-2. Restart nginx: `docker compose restart`
-3. Add DNS record in Pi-hole for `servicename.home` → `192.168.4.73`
+3. Restart nginx: `docker compose restart`
+4. Add DNS record in Pi-hole custom.list (see Pi-hole section)
+
+**Note:** For services in host network mode (like Pi-hole), use gateway IP `172.21.0.1` instead of container name in proxy_pass.
