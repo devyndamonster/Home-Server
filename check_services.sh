@@ -77,7 +77,7 @@ check_container "firefly_iii_core" "Firefly" || ((FAILURES++))
 check_container "firefly_iii_db" "Firefly DB" || ((FAILURES++))
 check_container "firefly_iii_importer" "Firefly Importer" || ((FAILURES++))
 check_http "http://firefly.home" "302" || ((FAILURES++))
-check_http "http://localhost:81/token" "200" || ((FAILURES++))
+check_http "http://firefly-importer.home/token" "200" || ((FAILURES++))
 echo ""
 
 # Check Mealie
