@@ -55,13 +55,13 @@ check_http() {
     local response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "$url" 2>/dev/null || echo "000")
     
     if [ "$response" = "$expected_code" ]; then
-        echo -e "  ${GREEN}✓${NC} HTTP ${expected_code} OK"
+        echo -e "  ${GREEN}✓${NC} HTTP ${expected_code} OK - ${url}"
         return 0
     elif [ "$response" = "000" ]; then
-        echo -e "  ${RED}✗${NC} Connection failed"
+        echo -e "  ${RED}✗${NC} Connection failed - ${url}"
         return 1
     else
-        echo -e "  ${YELLOW}⚠${NC} HTTP ${response} (expected ${expected_code})"
+        echo -e "  ${YELLOW}⚠${NC} HTTP ${response} (expected ${expected_code}) - ${url}"
         return 1
     fi
 }
@@ -77,7 +77,7 @@ check_container "firefly_iii_core" "Firefly" || ((FAILURES++))
 check_container "firefly_iii_db" "Firefly DB" || ((FAILURES++))
 check_container "firefly_iii_importer" "Firefly Importer" || ((FAILURES++))
 check_http "http://firefly.home" "302" || ((FAILURES++))
-check_http "http://localhost:81" "302" || ((FAILURES++))
+check_http "http://localhost:81/token" "200" || ((FAILURES++))
 echo ""
 
 # Check Mealie
