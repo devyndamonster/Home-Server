@@ -95,15 +95,7 @@ echo ""
 # Check Portainer
 echo -e "${BLUE}[5/6]${NC} Portainer (Container Management)"
 check_container "portainer" "Portainer" || ((FAILURES++))
-# Portainer usually runs on port 9000 or 9443, check if accessible
-if docker port portainer 2>/dev/null | grep -q "9000"; then
-    local port=$(docker port portainer | grep "9000" | cut -d: -f2)
-    check_http "http://localhost:${port}" "200" || ((FAILURES++))
-elif docker port portainer 2>/dev/null | grep -q "9443"; then
-    echo -e "  ${BLUE}ℹ${NC} Running on HTTPS (port 9443)"
-else
-    echo -e "  ${YELLOW}⚠${NC} Port not exposed"
-fi
+check_http "http://portainer.home" "200" || ((FAILURES++))
 echo ""
 
 # Summary

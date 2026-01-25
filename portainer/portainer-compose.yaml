@@ -6,14 +6,19 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+    expose:
+      - 9443
     ports:
-      - 9443:9443
       - 8000:8000  # Remove if you do not intend to use Edge Agents
+    networks:
+      - portainer_network
+      - nginx_proxy
 
 volumes:
   portainer_data:
     name: portainer_data
 
 networks:
-  default:
-    name: portainer_network
+  portainer_network:
+  nginx_proxy:
+    external: true
