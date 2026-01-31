@@ -67,12 +67,21 @@ check_http() {
 }
 
 # Check Nginx (proxy)
-echo -e "${BLUE}[1/5]${NC} Nginx Proxy"
+echo -e "${BLUE}[1/7]${NC} Nginx Proxy"
 check_container "nginx_proxy" "Nginx" || ((FAILURES++))
 echo ""
 
+# Check Logging Stack
+echo -e "${BLUE}[2/7]${NC} Logging Stack (Loki + Grafana)"
+check_container "loki" "Loki" || ((FAILURES++))
+check_container "promtail" "Promtail" || ((FAILURES++))
+check_container "grafana" "Grafana" || ((FAILURES++))
+check_http "http://grafana.home" "302" || ((FAILURES++))
+check_http "http://localhost:3100/ready" "200" || ((FAILURES++))
+echo ""
+
 # Check Firefly III
-echo -e "${BLUE}[2/6]${NC} Firefly III (Personal Finance)"
+echo -e "${BLUE}[3/7]${NC} Firefly III (Personal Finance)"
 check_container "firefly_iii_core" "Firefly" || ((FAILURES++))
 check_container "firefly_iii_db" "Firefly DB" || ((FAILURES++))
 check_container "firefly_iii_importer" "Firefly Importer" || ((FAILURES++))
@@ -81,19 +90,19 @@ check_http "http://firefly-importer.home/token" "200" || ((FAILURES++))
 echo ""
 
 # Check Mealie
-echo -e "${BLUE}[3/6]${NC} Mealie (Recipe Manager)"
+echo -e "${BLUE}[4/7]${NC} Mealie (Recipe Manager)"
 check_container "mealie" "Mealie" || ((FAILURES++))
 check_http "http://mealie.home" "200" || ((FAILURES++))
 echo ""
 
 # Check Pi-hole
-echo -e "${BLUE}[4/6]${NC} Pi-hole (DNS & Ad Blocking)"
+echo -e "${BLUE}[5/7]${NC} Pi-hole (DNS & Ad Blocking)"
 check_container "pihole" "Pi-hole" || ((FAILURES++))
 check_http "http://pihole.home/admin" "308" || ((FAILURES++))
 echo ""
 
 # Check Portainer
-echo -e "${BLUE}[5/6]${NC} Portainer (Container Management)"
+echo -e "${BLUE}[6/7]${NC} Portainer (Container Management)"
 check_container "portainer" "Portainer" || ((FAILURES++))
 check_http "http://portainer.home" "200" || ((FAILURES++))
 echo ""
